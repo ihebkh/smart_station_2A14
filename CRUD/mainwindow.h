@@ -22,6 +22,8 @@ private slots:
     void on_id_supp_clicked();
 
 
+    void on_nbrjours_modifier_clicked();
+
 private:
     Ui::MainWindow *ui;
     Client Etmp;

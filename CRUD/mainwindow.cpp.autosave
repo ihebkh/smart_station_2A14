@@ -80,7 +80,7 @@ void MainWindow::on_nbrjours_modifier_clicked()
      bool test=C.modifier(id);
      if(nbrjours<=0)
                           {
-                              QMessageBox::critical(0,qApp->tr("erreur"),qApp->tr("RABEK EKTEB 3ADAED MA39OUL."),QMessageBox::Cancel);
+                              QMessageBox::critical(0,qApp->tr("erreur"),qApp->tr("UN VALEUR POSITIF SVP."),QMessageBox::Cancel);
                           }
      else
      {
@@ -94,9 +94,6 @@ void MainWindow::on_nbrjours_modifier_clicked()
          else
              QMessageBox::critical(nullptr, QObject::tr("Not OK"),
                                    QObject::tr("Ajout non effectué.\n"
-                                               "click Cancel to exit."),QMessageBox::Cancel);
-
+                                              "click Cancel to exit."),QMessageBox::Cancel);
  }
-
-
 }

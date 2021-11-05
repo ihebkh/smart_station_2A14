@@ -29,6 +29,7 @@ class Client
     bool ajouter();
     QSqlQueryModel * afficher();
     bool supprimer(QString);
+    bool modifier(QString);
 
 private:
     QString id,nom,prenom,adresse,dateres;
