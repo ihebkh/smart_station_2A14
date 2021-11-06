@@ -24,6 +24,12 @@ private slots:
 
     void on_nbrjours_modifier_clicked();
 
+    void on_rechercher_button_clicked();
+
+    void on_trier_button_clicked();
+
+    void on_ajouteravis_clicked();
+
 private:
     Ui::MainWindow *ui;
     Client Etmp;
