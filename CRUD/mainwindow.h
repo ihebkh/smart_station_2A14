@@ -28,7 +28,9 @@ private slots:
 
     void on_trier_button_clicked();
 
-    void on_ajouteravis_clicked();
+
+
+    void on_qrcodegen_clicked();
 
 private:
     Ui::MainWindow *ui;
