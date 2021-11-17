@@ -1,56 +1,48 @@
 #include "client.h"
+#include <QtCharts>
+#include <QChartView>
+#include <QLineSeries>
+#include <iostream>
+using namespace std;
 Client::Client()
 {
 cin=0;
 id="";
 nom="";
-prenom="";
 numtel=0;
-adresse="";
 nbreticket=0;
 destination="";
 abonnement=0;
-numguichet="";
-avis="";
+nombre=0;
 }
-Client::Client(int cin ,QString id,QString nom,QString prenom,int numtel,QString adresse,int nbreticket,QString destination,int abonnement,QString numguichet ,QString avis )
+Client::Client(int cin ,QString id,QString nom,int numtel,int nbreticket,QString destination,int abonnement,int nombre)
 {
   this->cin=cin;
   this->id=id;
   this->nom=nom;
-  this->prenom=prenom;
   this->numtel=numtel;
-  this->adresse=adresse;
   this->nbreticket=nbreticket;
   this->destination=destination;
   this->abonnement=abonnement;
-  this->numguichet=numguichet;
-  this->avis=avis;
-
+  this->nombre=nombre;
 }
 int Client::get_cin(){return  cin;}
 QString Client::get_id(){return  id;}
 QString Client::get_nom(){return nom;}
-QString Client::get_prenom(){return prenom;}
 int Client::get_numtel(){return  numtel;}
-QString Client::get_adresse(){return adresse;}
 int Client::get_nbreticket(){return  nbreticket;}
 QString Client::get_destination(){return destination;}
 int Client::get_abonnement(){return  abonnement;}
-QString Client::getnumguichet(){return numguichet;}
-QString Client::getavis(){return avis;}
+int Client::get_nombre(){return  nombre;}
 
 void  Client::setcin( int cin){this->cin=cin;}
 void  Client::setid(QString id ){this->id=id;}
 void  Client::setnom(QString nom){this->nom=nom;}
-void  Client::setprenom(QString prenom){this->prenom=prenom;}
 void  Client::setnumtel(int numtel) {this->numtel=numtel;}
-void  Client::setadresse(QString adresse) {this->adresse=adresse;}
 void  Client::setnbreticket( int nbreticket){this->nbreticket=nbreticket;}
 void  Client::setdestination(QString destination){this->destination=destination;}
 void  Client::setabonnement(int abonnement) {this->abonnement=abonnement;}
-void  Client::setnumguichet(QString numguichet){this->numguichet=numguichet;}
-void  Client::setavis(QString avis){this->avis=avis;}
+void  Client::setnombre(int nombre) {this->nombre=nombre;}
 
 bool Client::ajouter()
 {
@@ -59,35 +51,33 @@ QString CINstring=QString::number(cin);  // les numeros doit des chaines pour in
 QString NUMTELstring=QString::number(numtel);
 QString nbreticketstring=QString::number(nbreticket);
 QString abonnementstring=QString::number(abonnement);
-query.prepare("INSERT INTO CLIENT (CIN,ID,NOM,PRENOM,NUMTEL,ADRESSE,NBRE_TICKET,DESTINATION,ABONNEMENT,NUM_GUICHET) "
-                    "VALUES ( :CIN,:ID, :NOM, :PRENOM, :NUMTEL, :ADRESSE, :NBRE_TICKET, :DESTINATION, :ABONNEMENT, :NUM_GUICHET)");
+
+query.prepare("INSERT INTO CLIENT (CIN,ID,NOM,NUMTEL,NBRE_TICKET,DESTINATION,ABONNEMENT) "
+                    "VALUES ( :CIN,:ID,:NOM,:NUMTEL,:NBRE_TICKET,:DESTINATION,:ABONNEMENT)");
 query.bindValue(":CIN", CINstring); //bindValue = traja3  donne fi bd w yalzem ykounou des chaines
 query.bindValue(":ID", id);
 query.bindValue(":NOM", nom);
-query.bindValue(":PRENOM", prenom);
 query.bindValue(":NUMTEL", NUMTELstring);
-query.bindValue(":ADRESSE", adresse );
 query.bindValue(":NBRE_TICKET", nbreticketstring);
 query.bindValue(":DESTINATION", destination );
 query.bindValue(":ABONNEMENT", abonnement);
-query.bindValue(":NUM_GUICHET",numguichet );
+
+
   return query.exec();
 }
 
 QSqlQueryModel * Client::afficher()
 {QSqlQueryModel * model= new QSqlQueryModel(); //fournir des données pour afficher des classes telles que QTableView.
 
-model->setQuery("select CIN,ID,NOM,PRENOM,NUMTEL,ADRESSE,NBRE_TICKET,DESTINATION,ABONNEMENT,NUM_GUICHET from client");
+model->setQuery("select CIN,ID,NOM,NUMTEL,NBRE_TICKET,DESTINATION,ABONNEMENT,NOMBRE from client");
 model->setHeaderData(0, Qt::Horizontal, QObject::tr("CIN"));
 model->setHeaderData(1, Qt::Horizontal, QObject::tr("ID"));
 model->setHeaderData(2, Qt::Horizontal, QObject::tr("NOM"));
-model->setHeaderData(3, Qt::Horizontal, QObject::tr("PRENOM"));
-model->setHeaderData(4, Qt::Horizontal, QObject::tr("NUMTEL "));
-model->setHeaderData(5, Qt::Horizontal, QObject::tr("ADRESSE"));
-model->setHeaderData(6, Qt::Horizontal, QObject::tr("NBRE_TICKET"));
-model->setHeaderData(7, Qt::Horizontal, QObject::tr("DESTINATION"));
-model->setHeaderData(8, Qt::Horizontal, QObject::tr("ABONNEMENT"));
-model->setHeaderData(9, Qt::Horizontal, QObject::tr("NUM_GUICHET"));
+model->setHeaderData(3, Qt::Horizontal, QObject::tr("NUMTEL "));
+model->setHeaderData(4, Qt::Horizontal, QObject::tr("NBRE_TICKET"));
+model->setHeaderData(5, Qt::Horizontal, QObject::tr("DESTINATION"));
+model->setHeaderData(6, Qt::Horizontal, QObject::tr("ABONNEMENT"));
+
 
 
     return model;
@@ -107,17 +97,16 @@ bool Client::modifier(QString id)
     QString NUMTELstring=QString::number(numtel);
     QString nbreticketstring=QString::number(nbreticket);
     QString abonnementstring=QString::number(abonnement);
+    QString nombrestring=QString::number(nombre);
     query.prepare("UPDATE client SET DESTINATION=:DESTINATION  WHERE ID=:ID");
     query.bindValue(":CIN", CINstring);
     query.bindValue(":ID", id);
     query.bindValue(":NOM", nom);
-    query.bindValue(":PRENOM", prenom);
     query.bindValue(":NUMTEL", NUMTELstring);
-    query.bindValue(":ADRESSE", adresse );
     query.bindValue(":NBRE_TICKET", nbreticketstring);
     query.bindValue(":DESTINATION", destination );
     query.bindValue(":ABONNEMENT", abonnementstring);
-    query.bindValue(":NUM_GUICHET",numguichet );
+    query.bindValue(":NOMBRE", nombrestring);
     return    query.exec();
 
 }
@@ -129,43 +118,27 @@ QSqlQueryModel *Client::rechercher(QString rech)
     return model;
 }
 
-QSqlQueryModel * Client::tri()
-{
-    QSqlQueryModel *model= new QSqlQueryModel;
-    QSqlQuery *q=new QSqlQuery();
-    q->prepare("select * from client order by NOM asc");
-    q->exec();
-    model->setQuery(*q);
-    return  model;
-}
-// ajouter avis
-bool Client::modifierV2(QString id)
-{
-    QSqlQuery query;
+QSqlQueryModel *Client::tri(){
 
-    query.prepare("UPDATE client SET AVIS=:AVIS  WHERE ID=:ID ");
-    query.bindValue(":ID", id);
-    query.bindValue(":AVIS",avis );
-    return    query.exec();
+   QSqlQuery *q = new QSqlQuery();
+   QSqlQueryModel *model = new QSqlQueryModel();
+   q->prepare("SELECT * FROM client ORDER BY NOM ");
+   q->exec();
+   model->setQuery(*q);
 
-}
-//affichage avis
-QSqlQueryModel * Client::afficherV2()
-{QSqlQueryModel * model= new QSqlQueryModel();
-
-model->setQuery("select AVIS from client");
-model->setHeaderData(0, Qt::Horizontal, QObject::tr("AVIS"));
-
-
-    return model;
+   return model;
 }
 
+QSqlQueryModel *Client::trid(){
 
+   QSqlQuery *q = new QSqlQuery();
+   QSqlQueryModel *model = new QSqlQueryModel();
+   q->prepare("SELECT * FROM client ORDER BY NOM DESC");
+   q->exec();
+   model->setQuery(*q);
 
-
-
-
-
+   return model;
+}
 
 
 

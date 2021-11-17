@@ -7,30 +7,25 @@
 class Client
 {public:
     Client();
-    Client(int,QString,QString,QString,int,QString,int,QString,int,QString,QString);
+    Client(int,QString,QString,int,int,QString,int,int);
     int  get_cin();
     QString  get_id(); // get = lire
     QString get_nom();
-    QString get_prenom();
     int get_numtel();
-    QString get_adresse();
     int get_nbreticket();
     QString get_destination();
     int get_abonnement();
-    QString getnumguichet();
-    QString getavis();
+    int get_nombre();
+
 
     void  setcin(int); // set = ecrire
     void  setid(QString);
     void  setnom(QString);
-    void  setprenom(QString);
     void  setnumtel( int);
-    void  setadresse(QString);
     void  setnbreticket(int);
     void  setdestination(QString);
     void  setabonnement(int);
-    void  setnumguichet(QString);
-    void  setavis(QString);
+    void  setnombre(int);
 
     bool ajouter();
     QSqlQueryModel * afficher();
@@ -38,14 +33,12 @@ class Client
     bool modifier(QString);
   QSqlQueryModel * rechercher(QString);
    QSqlQueryModel *tri();
-   //pour l avis
-   bool modifierV2(QString);
-   QSqlQueryModel * afficherV2();
+   QSqlQueryModel * trid();
 
 
 private:
-    QString id,nom,prenom,adresse,destination,numguichet,avis;
-    int cin,abonnement,nbreticket,numtel;
+    QString id,nom,destination;
+    int cin,abonnement,nbreticket,numtel,nombre;
 };
 
 #endif // CLIENT_H

@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui sql
+QT += core gui charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -26,18 +27,23 @@ CONFIG += c++11
 
 SOURCES += \
     QrCode.cpp \
+    avis.cpp \
     client.cpp \
+    dialog.cpp \
         main.cpp \
         mainwindow.cpp \
     connection.cpp
 
 HEADERS += \
     QrCode.hpp \
+    avis.h \
     client.h \
+    dialog.h \
         mainwindow.h \
     connection.h
 
 FORMS += \
+    dialog.ui \
     mainwindow.ui
 
 # Default rules for deployment.
