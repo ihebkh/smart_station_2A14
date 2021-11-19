@@ -6,17 +6,20 @@
 
 
 class Reparations
-{public:
+{
+    public:
 Reparations();
-Reparations(int,QString,QString,QString,QString,QString);
+Reparations(QString,QString,QString,QString,QString,QString);
 
 
-int getid_reparation();
+QString getid_reparation();
 QString getpiece();
 QString getpanne();
 QString getfacture();
 QString getdate_dispo();
 QString getdate_debut();
+
+
 void setid_reparation(int);
 void setpiece(QString);
 void setpanne(QString);
@@ -26,9 +29,13 @@ void setdate_debut(QString);
 
 bool ajouter();
 QSqlQueryModel * afficher();
-bool supprimer(int);
+bool supprimer(QString);
+bool modifier(QString);
+QSqlQueryModel * rechercher(QString);
+ QSqlQueryModel *tri();
+ QSqlQueryModel * trid();
 private:
-int id_reparation;
+QString id_reparation;
 QString piece,panne,facture;
 QString date_debut,date_dispo;
 

@@ -1,4 +1,6 @@
+
 QT       += core gui sql
+QT += core gui charts
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
@@ -18,12 +20,14 @@ SOURCES += \
     connection.cpp \
     main.cpp \
     mainwindow.cpp \
-    reparations.cpp
+    reparations.cpp \
+    smtp.cpp
 
 HEADERS += \
     connection.h \
     mainwindow.h \
-    reparations.h
+    reparations.h \
+    smtp.h
 
 FORMS += \
     mainwindow.ui
