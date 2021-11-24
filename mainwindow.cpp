@@ -1,6 +1,3 @@
-
-#include "smtp.h"
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
@@ -14,24 +11,46 @@
 
 
 
-#include <QSqlQueryModel>
-#include <QtCharts>
-#include <QChartView>
-#include <QLineSeries>
+#include <QIntValidator>
+#include "QSqlQuery"
+#include "QStringListModel"
+#include<QFileDialog>
+#include<QTextDocument>
+#include<QTextStream>
+#include<QGraphicsView>
+#include<QtPrintSupport/QPrintDialog>
+#include<QPdfWriter>
+#include<QSqlQueryModel>
+#include<QSqlQuery>
+#include<QSystemTrayIcon>
+#include<QUrlQuery>
+#include<QJsonDocument>
+#include<QJsonObject>
+#include<QJsonArray>
+#include <QDate>
+#include <QTime>
+#include<QMessageBox>
+#include<QSqlTableModel>
+#include<QItemSelectionModel>
+#include<QTableWidgetItem>
+#include <QtPrintSupport/QPrinter>
+#include <QDesktopServices>
+#include <QDesktopWidget>
+#include <QCoreApplication>
+#include "smtp.h"
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    ui->ID_REPARATION->setValidator(new QIntValidator(0,999999999,this));
     ui->tab_reparation->setModel(R.afficher());
-    ui->ID_REPARATION->setValidator(new QIntValidator(0,999999999,this));
-
-        ui->le_debut->setMaxLength(10);
-        ui->DATE_DISPO->setMaxLength(10);
-        ui->l_facture->setMaxLength(30);
-
+        ui->ID_REPARATION->setMaxLength(30);
+        ui->date_dispo->setMaxLength(10);
+        ui->date_debut->setMaxLength(30);
+        ui->facture->setMaxLength(30);
+        ui->id_reparation->setMaxLength(30);
+        ui->email->setMaxLength(30);
 }
 
 MainWindow::~MainWindow()
@@ -42,13 +61,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pb_ajouter_clicked()
 {
-    QString id_reparation=ui->ID_REPARATION->text();
-    QString piece=ui->le_piece->text();
-    QString panne=ui->le_panne->currentText();
-    QString date_dispo=ui->DATE_DISPO->text();
-    QString date_debut=ui->le_debut->text();
-    QString facture=ui->l_facture->text();
- Reparations R(id_reparation,piece,panne,date_dispo,date_debut,facture);
+    QString id_reparation=ui->id_reparation->text();
+    QString piece=ui->piece->text();
+    QString panne=ui->panne->currentText();
+    QString date_debut=ui->date_debut->text();
+    QString date_dispo=ui->date_dispo->text();
+    QString facture=ui->facture->text();
+    QString email=ui->email->text();
+ Reparations R(id_reparation,piece,panne,date_dispo,date_debut,facture,email);
  bool test=R.ajouter();
  if (test)
          { //Actualiser
@@ -67,55 +87,64 @@ void MainWindow::on_pb_ajouter_clicked()
 
 void MainWindow::on_pb_supprimer_clicked()
 {
- Reparations R;
-R.setid_reparation(ui->le_id_supp->text().toInt());
-bool test=R.supprimer(R.getid_reparation());
-QMessageBox msgBox;
-if (test)
-{
-    msgBox.setText("Suppression avec succes.");
-    ui->tab_reparation->setModel(R.afficher());
-}else
- msgBox.setText("Echec de suppresion.");
+    Reparations R;
+   R.setid_reparation(ui->le_id_supp->text());
+   bool test=R.supprimer(R.getid_reparation());
 
-msgBox.exec();
+   if (test)
+   {
+       ui->tab_reparation->setModel(R.afficher());
+       QMessageBox::information( nullptr, QObject::tr("supprimé"),
+                   QObject::tr("deleted successfully.\n"
+                               "Click Cancel to exit."), QMessageBox::Cancel);
 
-}
+   }else
+       QMessageBox::critical(nullptr, QObject::tr("pas supprimé"),
+                   QObject::tr("Delete failed.\n"
+                               "Click Cancel to exit."), QMessageBox::Cancel);
+
+
+
+
+
+   }
+
 void MainWindow::on_date_dispo_modifier_clicked()
 {
+QString id_reparation=ui->ID_REPARATION->text();
+   QString piece=ui->PIECE->text();
+   QString panne=ui->panne->currentText();
+   QString date_dispo=ui->date_dispo->text();
+   QString date_debut=ui->date_debut->text();
+   QString facture=ui->facture->text();
+   QString email=ui->email->text();
 
-    QString id_reparation=ui->id_reparation->text();
-    QString piece=ui->le_piece->text();
-    QString panne=ui->le_panne->currentText();
-    QString date_dispo=ui->date_dispo->text();
-    QString date_debut=ui->le_debut->text();
-    QString facture=ui->l_facture->text();
-    Reparations R(id_reparation,piece,panne,date_debut,date_dispo,facture);
+   Reparations R(id_reparation,piece,panne,date_debut,date_dispo,facture,email);
 
-    if (date_dispo.isEmpty())
-                 {
-                     QMessageBox::critical(0,qApp->tr("erreur"),qApp->tr("remplir la date dispo svp."),QMessageBox::Cancel);
-                 }
-             else
-             {
-         bool test=R.modifier(id_reparation);
+   if (piece.isEmpty())
+                {
+                    QMessageBox::critical(0,qApp->tr("erreur"),qApp->tr("remplir le piece svp."),QMessageBox::Cancel);
+                }
+            else
+            {
+        bool test=R.modifier(id_reparation);
 
-         if (test)
-                 { //Actualiser
-              ui->tab_reparation->setModel(R.afficher());
-                 QMessageBox:: information(nullptr, QObject::tr("OK"),
-                                                    QObject::tr("Modifier la reparation effectué©\n"
-                                                                "click cancel to exit."),QMessageBox::Cancel);
-                 }
-             else
-                 QMessageBox::critical(nullptr, QObject::tr("Not OK"),
-                                       QObject::tr("Ajout non effectué.\n"
+        if (test)
+                { //Actualiser
+             ui->tab_reparation->setModel(R.afficher());
+                QMessageBox:: information(nullptr, QObject::tr("OK"),
+                                                   QObject::tr("Modifier la reparation effectué©\n"
+                                                               "click cancel to exit."),QMessageBox::Cancel);
+                }
+            else
+                QMessageBox::critical(nullptr, QObject::tr("Not OK"),
+                                      QObject::tr("Ajout non effectué.\n"
 
-                                           "click Cancel to exit."),QMessageBox::Cancel);}
+                                          "click Cancel to exit."),QMessageBox::Cancel);}
 }
 void MainWindow::on_rechercher_button_clicked()
 {
-    QString rech =ui->id_reparation->text();
+    QString rech =ui->ID_REPARATION->text();
         ui->tab_reparation->setModel(R.rechercher(rech));
 }
 
@@ -156,8 +185,6 @@ void MainWindow::on_statsmed_clicked()
       QString e = QString("huile moteur" +QString::number((number5*100)/total,'f',2)+"%" );
 
      QString f = QString("autre "+QString::number((number6*100)/total,'f',2)+"%" );
-
-
      QPieSeries *series = new QPieSeries();
      series->append(a,number1);
      series->append(b,number2);
@@ -221,8 +248,11 @@ void MainWindow::on_statsmed_clicked()
 }
 
 
+
+
 void MainWindow::on_pushButton_browse_email_clicked()
-{ files.clear();
+{
+    files.clear();
 
     QFileDialog dialog(this);
     dialog.setDirectory(QDir::homePath());
@@ -236,11 +266,7 @@ void MainWindow::on_pushButton_browse_email_clicked()
         fileListString.append( "\"" + QFileInfo(file).fileName() + "\" " );
 
     ui->lineEdit_atchmnt_email->setText( fileListString );
-
 }
-
-
-
 
 void MainWindow::on_pushButton_send_email_clicked()
 {
@@ -279,3 +305,85 @@ void MainWindow::on_pushButton_send_email_clicked()
                 smtp->sendMail(from, to, subject, email_text);
 
 }
+
+
+
+
+void MainWindow::on_btn_calculer_clicked()
+{
+
+       Reparations R;
+        int nbr_v;
+        nbr_v=R.calculer();
+        ui->res_calc->display(nbr_v);
+
+
+}
+
+void MainWindow::on_btn_imp_clicked()
+{
+    QString strStream;
+                             QTextStream out(&strStream);
+
+                             const int rowCount = ui->tab_reparation->model()->rowCount();
+                             const int columnCount = ui->tab_reparation->model()->columnCount();
+                             QString TT = QDate::currentDate().toString("yyyy/MM/dd");
+                             out <<"<html>\n"
+                                   "<head>\n"
+                                    "<meta Content=\"Text/html; charset=Windows-1251\">\n"
+                                 << "<title>ERP - COMmANDE LIST<title>\n "
+                                 << "</head>\n"
+                                 "<body bgcolor=#ffffff link=#5000A0>\n"
+                                 "<h1 style=\"text-align: center;\"><strong> ******LISTE DES  licence commerciale ******"+TT+" </strong></h1>"
+                                 "<table style=\"text-align: center; font-size: 20px;\" border=1>\n "
+                                   "</br> </br>";
+                             // headers
+                             out << "<thead><tr bgcolor=#d6e5ff>";
+                             for (int column = 0; column < columnCount; column++)
+                                 if (!ui->tab_reparation->isColumnHidden(column))
+                                     out << QString("<th>%1</th>").arg(ui->tab_reparation->model()->headerData(column, Qt::Horizontal).toString());
+                             out << "</tr></thead>\n";
+
+                             // data table
+                             for (int row = 0; row < rowCount; row++) {
+                                 out << "<tr>";
+                                 for (int column = 0; column < columnCount; column++) {
+                                     if (!ui->tab_reparation->isColumnHidden(column)) {
+                                         QString data =ui->tab_reparation->model()->data(ui->tab_reparation->model()->index(row, column)).toString().simplified();
+                                         out << QString("<td bkcolor=0>%1</td>").arg((!data.isEmpty()) ? data : QString("&nbsp;"));
+                                     }
+                                 }
+                                 out << "</tr>\n";
+                             }
+                             out <<  "</table>\n"
+                                 "</body>\n"
+                                 "</html>\n";
+
+                             QTextDocument *document = new QTextDocument();
+                             document->setHtml(strStream);
+
+                             QPrinter printer;
+
+                             QPrintDialog *dialog = new QPrintDialog(&printer, nullptr);
+                             if (dialog->exec() == QDialog::Accepted) {
+                                 document->print(&printer);
+                             }
+
+                             delete document;
+
+
+}
+
+    void MainWindow::on_pb_exit_clicked()
+    {
+        QMessageBox::StandardButton reply = QMessageBox :: question (this,
+                               "EXIT","Voulez-vous vraiment sortir ?",
+                            QMessageBox :: Yes | QMessageBox :: No);
+        if (reply == QMessageBox :: Yes)
+            {QApplication ::quit();}
+        else {
+            qDebug() <<"No is clicked";
+             }
+
+    }
+

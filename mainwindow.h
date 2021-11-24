@@ -57,23 +57,26 @@ public:
 
 private slots:
     void on_pb_ajouter_clicked();
-
-    void on_pb_supprimer_clicked();
     void on_date_dispo_modifier_clicked();
+    void on_pb_supprimer_clicked();
 
-void on_rechercher_button_clicked();
-void on_radioButton_croissant_clicked();
+    void on_rechercher_button_clicked();
+    void on_radioButton_croissant_clicked();
+    void on_radioButton_dcroissant_clicked();
+    void on_statsmed_clicked();
+    void on_pushButton_browse_email_clicked();
 
-void on_radioButton_dcroissant_clicked();
-void on_statsmed_clicked();
-void on_id_supp_clicked();
-void on_pushButton_browse_email_clicked();
+    void on_pushButton_send_email_clicked();
 
-void on_pushButton_send_email_clicked();
+    void on_btn_calculer_clicked();
+    void on_btn_imp_clicked();
+
+
+    void on_pb_exit_clicked();
 
 private:
     Ui::MainWindow *ui;
     Reparations R;
-     QStringList files;
+    QStringList files;
 };
 #endif // MAINWINDOW_H

@@ -36,7 +36,7 @@ private slots:
 
 private:
     QTextStream *t;
-    QSslSocket *socket;
+    QSslSocket * socket;
     QString message;
     QString from;
     QString rcpt;
