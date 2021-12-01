@@ -2,8 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "client.h"
-#include "avis.h"
+#include "vehicule.h"
 namespace Ui {
 class MainWindow;
 }
@@ -29,29 +28,17 @@ private slots:
 
     void on_trier_button_clicked();
 
+
+
     void on_qrcodegen_clicked();
-
-    void on_ajouteravis_clicked();
-
-    void on_radioButton_croissant_clicked();
-
-    void on_radioButton_dcroissant_clicked();
-
-
-    void on_supprimeravis_2_clicked();
-
-    void on_modifieravis_3_clicked();
 
     void on_statsmed_clicked();
 
-    void on_destination_2_clicked();
-
-    void on_tab_client_activated(const QModelIndex &index);
+    void on_btn_imp_clicked();
 
 private:
     Ui::MainWindow *ui;
-    Client Etmp;
-    avis AA;
+    vehicule Etmp;
 };
 
 #endif // MAINWINDOW_H
